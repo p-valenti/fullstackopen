@@ -3,13 +3,18 @@ import Header from './Header';
 import Content from "./Content.jsx";
 import Total from "./Total.jsx";
 
-const Course = ({course}) => {
+const Course = ({courses}) => {
     console.log("after header")
     return (
         <>
-            <Header course={course.name}/>
-            <Content parts={course.parts}/>
-            <Total parts={course.parts}/>
+            {courses.map(course => (
+                <div key={course.id}>
+                    <Header course={course.name}/>
+                    <Content parts={course.parts}/>
+                    <Total parts={course.parts}/>
+                </div>
+            ))}
+
         </>
     )
 }
