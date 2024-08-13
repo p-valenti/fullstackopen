@@ -13,11 +13,17 @@ const App = () => {
     const addPerson = (event) => {
         event.preventDefault()
         console.log('button clicked', event.target)
-        const personObject = {
-            name: newName,
+
+        const nameRepeated = persons.some(person => person.name === newName)
+        if (nameRepeated) {
+            alert(`${newName} is already added to phonebook`)
+        } else {
+            const personObject = {
+                name: newName,
+            }
+            setPersons(persons.concat(personObject))
+            setNewName('')
         }
-        setPersons(persons.concat(personObject))
-        setNewName('')
     }
 
     return (
@@ -41,7 +47,7 @@ const App = () => {
                     <li key={index}>{person.name}</li>
                 ))}
             </ul>
-            <div>debug: {newName}</div>
+            {/*<div>debug: {newName}</div>*/}
         </div>
     )
 }
