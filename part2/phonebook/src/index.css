@@ -1,6 +1,5 @@
-.error {
-    color: green;
-    background: lightgrey;
+.notification {
+    background-color: lightgrey;
     font-size: 20px;
     border-style: solid;
     border-radius: 5px;
@@ -8,6 +7,16 @@
     margin-bottom: 10px;
 }
 
-.error.visible {
+.notification.success {
+    color: green;
+    border-color: green;
+}
+
+.notification.error {
+    color: red;
+    border-color: red;
+}
+
+.notification.visible {
     display: block;
 }

@@ -55,6 +55,14 @@ const App = () => {
                         setTimeout(() => {
                             setErrorMessage(null);
                         }, 3000);
+                    })
+                    .catch(error => {
+                        console.error('Error updating person:', error);
+                        setErrorMessage({ message: `Information of '${newName}' has already been removed from the server`, type: 'error' });
+                        setPersons(persons.filter(p => p.id !== personRepeated.id));
+                        setTimeout(() => {
+                            setErrorMessage(null);
+                        }, 5000);
                     });
             }
         } else {
@@ -73,6 +81,13 @@ const App = () => {
                     setTimeout(() => {
                         setErrorMessage(null);
                     }, 3000);
+                })
+                .catch(error => {
+                    console.error('Error creating person:', error);
+                    setErrorMessage({ message: `Failed to add '${newName}'`, type: 'error' });
+                    setTimeout(() => {
+                        setErrorMessage(null);
+                    }, 5000);
                 });
         }
     }
@@ -83,6 +98,17 @@ const App = () => {
                 .remove(id)
                 .then(() => {
                     setPersons(persons.filter(person => person.id !== id));
+                    setErrorMessage({ message: `Deleted '${name}'`, type: 'success' });
+                    setTimeout(() => {
+                        setErrorMessage(null);
+                    }, 3000);
+                })
+                .catch(error => {
+                    console.error('Error deleting person:', error);
+                    setErrorMessage({ message: `Failed to delete '${name}'`, type: 'error' });
+                    setTimeout(() => {
+                        setErrorMessage(null);
+                    }, 5000);
                 });
         }
     };
@@ -94,7 +120,7 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
-            <Notification message={errorMessage}/>
+            <Notification message={errorMessage?.message} type={errorMessage?.type} />
             <Filter searchName={searchName} handleSearchNameChange={handleSearchNameChange}/>
             <Form
                 addPerson={addPerson}
