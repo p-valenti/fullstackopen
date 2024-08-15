@@ -3,15 +3,19 @@ import personService from '../services/persons';
 import Filter from "./components/Filter.jsx";
 import Form from "./components/Form.jsx";
 import Persons from "./components/Persons.jsx";
+import Notification from "./components/Notification.jsx";
 
 const App = () => {
     const [persons, setPersons] = useState([
-        {name: 'Arto Hellas',
-        number: '046-1211212'}
+        {
+            name: 'Arto Hellas',
+            number: '046-1211212'
+        }
     ]);
     const [newName, setNewName] = useState('');
     const [newNumber, setNewNumber] = useState('');
     const [searchName, setSearchName] = useState('');
+    const [errorMessage, setErrorMessage] = useState(null);
 
     useEffect(() => {
         personService
@@ -44,9 +48,13 @@ const App = () => {
                 personService
                     .update(personRepeated.id, updatedPerson)
                     .then(returnedPerson => {
-                    setPersons(persons.map(person=> person.id !== personRepeated.id ? person : returnedPerson));
-                    setNewName('');
-                    setNewNumber('')
+                        setPersons(persons.map(person => person.id !== personRepeated.id ? person : returnedPerson));
+                        setNewName('');
+                        setNewNumber('');
+                        setErrorMessage(`Updated '${returnedPerson.name}'`);
+                        setTimeout(() => {
+                            setErrorMessage(null);
+                        }, 3000);
                     });
             }
         } else {
@@ -61,6 +69,10 @@ const App = () => {
                     setPersons(persons.concat(newPerson));
                     setNewName('');
                     setNewNumber('');
+                    setErrorMessage(`Added '${newPerson.name}'`);
+                    setTimeout(() => {
+                        setErrorMessage(null);
+                    }, 3000);
                 });
         }
     }
@@ -82,7 +94,8 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
-            <Filter searchName={searchName} handleSearchNameChange={handleSearchNameChange} />
+            <Notification message={errorMessage}/>
+            <Filter searchName={searchName} handleSearchNameChange={handleSearchNameChange}/>
             <Form
                 addPerson={addPerson}
                 newName={newName}
