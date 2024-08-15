@@ -37,9 +37,18 @@ const App = () => {
         event.preventDefault()
         console.log('button clicked', event.target)
 
-        const nameRepeated = persons.some(person => person.name.toLowerCase() === newName.toLowerCase())
-        if (nameRepeated) {
-            alert(`${newName} is already added to phonebook`)
+        const personRepeated = persons.find(person => person.name.toLowerCase() === newName.toLowerCase())
+        if (personRepeated) {
+            if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+                const updatedPerson = {...personRepeated, number: newNumber};
+                personService
+                    .update(personRepeated.id, updatedPerson)
+                    .then(returnedPerson => {
+                    setPersons(persons.map(person=> person.id !== personRepeated.id ? person : returnedPerson));
+                    setNewName('');
+                    setNewNumber('')
+                    });
+            }
         } else {
             const personObject = {
                 name: newName,
