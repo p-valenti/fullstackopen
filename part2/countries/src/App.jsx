@@ -7,6 +7,9 @@ const App = () => {
     const [countries, setCountries] = useState([]);
     const [error, setError] = useState('');
     const [selectedCountry, setSelectedCountry] = useState(null);
+    const [weather, setWeather] = useState(null);
+
+    const api_key = import.meta.env.VITE_SOME_KEY;
 
     useEffect(() => {
         if (query) {
@@ -19,16 +22,20 @@ const App = () => {
                         setCountries(response.data);
                         setError('');
                         setSelectedCountry(null);
+                        setWeather(null);
                     }
                 })
                 .catch(() => {
                     setCountries([]);
                     setError('Too many matches, specify another filter');
+                    setSelectedCountry(null);
+                    setWeather(null);
                 });
         } else {
             setCountries([]);
             setError('');
             setSelectedCountry(null);
+            setWeather(null);
         }
     }, [query]);
 
@@ -38,6 +45,25 @@ const App = () => {
 
     const handleDetails = (country) => {
         setSelectedCountry(country);
+        downloadedWeather(country.capital[0])
+    };
+
+    const downloadedWeather = (capital) => {
+        console.log("API Key:", api_key);
+
+        if (!api_key) {
+            console.error('No API key found.');
+            return;
+        }
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${capital}&units=metric&appid=${api_key}`;
+
+        axios.get(url)
+            .then(response => {
+                setWeather(response.data);
+            })
+            .catch(error => {
+                console.error('Failed data fetching',error);
+            });
     };
 
     const countryList = () => {
@@ -55,8 +81,8 @@ const App = () => {
                 </ul>
             );
         } else if (countries.length === 1) {
-            // const country = countries[0];
             setSelectedCountry(countries[0]);
+            downloadedWeather(countries[0].capital[0]);
             return null;
         } else {
             return null;
@@ -69,10 +95,26 @@ const App = () => {
             return (
                 <div>
                     <h1>{country.name.common}</h1>
-                    <p><strong>Capital:</strong> {country.capital}</p>
-                    <p><strong>Area:</strong> {country.area} km²</p>
+                    <p>Capital: {country.capital}</p>
+                    <p>Area: {country.area} km²</p>
                     <p><strong>Languages:</strong> {Object.values(country.languages).join(', ')}</p>
                     <img src={country.flags.png} alt={`Flag of ${country.name.common}`} width="200" />
+                    {shownWeather()}
+                </div>
+            );
+        }
+        return null;
+    };
+
+    const shownWeather = () => {
+        if (weather) {
+            return (
+                <div>
+                    <h2>Weather in {weather.name}</h2>
+                    <p>temperature: {weather.main.temp} Celcius</p>
+                    <img src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+                         alt="weather icon"/>
+                    <p>wind: {weather.wind.speed} m/s</p>
                 </div>
             );
         }
