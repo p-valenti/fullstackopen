@@ -66,7 +66,7 @@ app.post('/api/persons', (request, response) => {
 
     const existingName = persons.some(person => person.name === name);
     if (existingName) {
-        return response.status(400).json({ error: 'Name already exists' });
+        return response.status(400).json({ error: 'Name must be unique' });
     }
 
     const generatedId = Math.floor(Math.random() * 1000000);
