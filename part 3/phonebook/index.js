@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+app.use(express.json())
 
 let persons = [
     {
@@ -55,6 +56,30 @@ app.delete('/api/persons/:id', (request, response) => {
 
     response.status(204).end()
 })
+
+app.post('/api/persons', (request, response) => {
+    const {name, number} = request.body
+
+    if (!name || !number) {
+        return response.status(400).json({ error: 'Name and number are required' });
+    }
+
+    const existingName = persons.some(person => person.name === name);
+    if (existingName) {
+        return response.status(400).json({ error: 'Name already exists' });
+    }
+
+    const generatedId = Math.floor(Math.random() * 1000000);
+
+    const newPerson = {
+        id: generatedId,
+        name: name,
+        number: number,
+    }
+
+    persons = persons.concat(newPerson);
+    response.status(201).json(newPerson);
+});
 
 const PORT = 3001
 app.listen(PORT, () => {
