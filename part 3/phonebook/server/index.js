@@ -1,10 +1,13 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
-app.use(cors()); // Enable CORS
+app.use(cors());
 app.use(express.json());
+
+app.use(express.static(path.join(__dirname, 'dist')));
 
 morgan.token('body', (req) => {
     return req.method === 'POST' ? JSON.stringify(req.body) : '';
@@ -35,9 +38,9 @@ let persons = [
     }
 ];
 
-app.get('/', (request, response) => {
-    response.send(' ')
-});
+// app.get('/', (request, response) => {
+//     response.send(' ')
+// });
 
 app.get('/api/persons', (request, response) => {
     response.json(persons)
@@ -89,6 +92,10 @@ app.post('/api/persons', (request, response) => {
 
     persons = persons.concat(newPerson);
     response.status(201).json(newPerson);
+});
+
+app.get('/', (request, response) => {
+    response.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 const PORT = process.env.PORT || 3000
