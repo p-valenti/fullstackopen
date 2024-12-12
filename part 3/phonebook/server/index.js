@@ -7,6 +7,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
 app.use(express.static(path.join(__dirname, 'dist')));
 
 morgan.token('body', (req) => {
@@ -98,9 +99,9 @@ app.get('/', (request, response) => {
     response.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-});
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+// });
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, '0.0.0.0', () => {

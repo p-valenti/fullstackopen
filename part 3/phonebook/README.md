@@ -1,6 +1,6 @@
 # Phonebook Backend
 
-This is the backend part for the Phonebook exercise.
+This is the Phonebook exercise.
 
 ## Deployed Application
 This part is deployed on Fly.io:  
