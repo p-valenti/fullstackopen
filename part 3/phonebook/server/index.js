@@ -1,8 +1,9 @@
-require('dotenv').config()
+const path = require('path');
+// require('dotenv').config()
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
-const path = require('path');
 
 const app = express();
 app.use(cors());
@@ -66,15 +67,20 @@ app.get('/info', (request, response) => {
     response.send(`<p>Phonebook has info for ${entriesNumber} persons <br/> ${currentTime} </p>`)
 });
 
-app.get('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    const person = persons.find(note => note.id === id)
-
-    if (person) {
-        response.json(person)
-    } else {
-        response.status(404).end()
-    }
+app.get('/api/persons/:id', (request, response, next) => {
+    // const id = request.params.id
+    // const person = persons.find(note => note.id === id)
+    //
+    // if (person) {
+    //     response.json(person)
+    // } else {
+    //     response.status(404).end()
+    // }
+    Person.find({})
+        .then((persons) => {
+            res.json(persons);
+        })
+        .catch((error) => next(error));
 })
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -120,3 +126,6 @@ const PORT = process.env.PORT
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`)
 })
+
+console.log('MONGODB_URI:', process.env.MONGODB_URI);
+console.log('PORT:', process.env.PORT);

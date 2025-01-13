@@ -4,6 +4,7 @@ import Filter from "./components/Filter.jsx";
 import Form from "./components/Form.jsx";
 import Persons from "./components/Persons.jsx";
 import Notification from "./components/Notification.jsx";
+import axios from "axios";
 
 const App = () => {
     const [persons, setPersons] = useState([]);
@@ -13,12 +14,16 @@ const App = () => {
     const [errorMessage, setErrorMessage] = useState(null);
 
     useEffect(() => {
-        personService
-            .getAll()
-            .then(initialPersons => {
-                setPersons(initialPersons);
+        axios
+            .get('/api/persons')
+            .then(response => {
+                console.log(response.data);
+                setPersons(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
             });
-    }, [])
+    }, []);
 
     const handleNameChange = (event) => {
         setNewName(event.target.value)
