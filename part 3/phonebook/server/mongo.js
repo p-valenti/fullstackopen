@@ -21,14 +21,15 @@ const personSchema = new mongoose.Schema({
 const Person = mongoose.model('Person', personSchema);
 
 if (process.argv.length === 3) {
-    // Display all entries
     console.log('phonebook:');
-    Person.find({}).then((result) => {
+    Person.find({})
+        .then((result) => {
         result.forEach((person) => {
             console.log(`${person.name} ${person.number}`);
         });
         mongoose.connection.close();
-    });
+    })
+        .catch(err => console.error(err));
 } else if (process.argv.length === 5) {
     // Add a new entry
     const name = process.argv[3];
@@ -39,10 +40,12 @@ if (process.argv.length === 3) {
         number,
     });
 
-    person.save().then(() => {
+    person.save()
+        .then(() => {
         console.log(`added ${name} number ${number} to phonebook`);
         mongoose.connection.close();
-    });
+    })
+        .catch(err => console.error(err));
 } else {
     console.log('Invalid number of arguments. Usage: node mongo.js <password> [name] [number]');
     mongoose.connection.close();
