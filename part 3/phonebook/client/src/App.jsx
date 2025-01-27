@@ -22,6 +22,10 @@ const App = () => {
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
+                setErrorMessage({ message: 'Failed to load persons from the server', type: 'error' });
+                setTimeout(() => {
+                    setErrorMessage(null);
+                }, 5000);
             });
     }, []);
 
@@ -38,59 +42,32 @@ const App = () => {
     }
 
     const addPerson = (event) => {
-        event.preventDefault()
-        console.log('button clicked', event.target)
+        event.preventDefault();
 
-        const personRepeated = persons.find(person => person.name.toLowerCase() === newName.toLowerCase())
-        if (personRepeated) {
-            if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
-                const updatedPerson = {...personRepeated, number: newNumber};
-                personService
-                    .update(personRepeated.id, updatedPerson)
-                    .then(returnedPerson => {
-                        setPersons(persons.map(person => person.id !== personRepeated.id ? person : returnedPerson));
-                        setNewName('');
-                        setNewNumber('');
-                        setErrorMessage(`Updated '${returnedPerson.name}'`);
-                        setTimeout(() => {
-                            setErrorMessage(null);
-                        }, 3000);
-                    })
-                    .catch(error => {
-                        console.error('Error updating person:', error);
-                        setErrorMessage({ message: `Information of '${newName}' has already been removed from the server`, type: 'error' });
-                        setPersons(persons.filter(p => p.id !== personRepeated.id));
-                        setTimeout(() => {
-                            setErrorMessage(null);
-                        }, 5000);
-                    });
-            }
-        } else {
-            const personObject = {
-                name: newName,
-                number: newNumber,
-            };
+        const personObject = {
+            name: newName,
+            number: newNumber,
+        };
 
-            personService
-                .create(personObject)
-                .then(newPerson => {
-                    setPersons(persons.concat(newPerson));
-                    setNewName('');
-                    setNewNumber('');
-                    setErrorMessage(`Added '${newPerson.name}'`);
-                    setTimeout(() => {
-                        setErrorMessage(null);
-                    }, 3000);
-                })
-                .catch(error => {
-                    console.error('Error creating person:', error);
-                    setErrorMessage({ message: `Failed to add '${newName}'`, type: 'error' });
-                    setTimeout(() => {
-                        setErrorMessage(null);
-                    }, 5000);
-                });
-        }
-    }
+        personService
+            .create(personObject)
+            .then(newPerson => {
+                setPersons(persons.concat(newPerson));
+                setNewName('');
+                setNewNumber('');
+                setErrorMessage({ message: `Added '${newPerson.name}'`, type: 'success' });
+                setTimeout(() => {
+                    setErrorMessage(null);
+                }, 3000);
+            })
+            .catch(error => {
+                console.error('Error creating person:', error);
+                setErrorMessage({ message: `Failed to add '${newName}'`, type: 'error' });
+                setTimeout(() => {
+                    setErrorMessage(null);
+                }, 5000);
+            });
+    };
 
     const deletePerson = (id, name) => {
         if (window.confirm(`Delete ${name}?`)) {

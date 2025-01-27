@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-// require('dotenv').config();
 
 mongoose.set('strictQuery', false);
 
@@ -18,8 +17,7 @@ mongoose.connect(url)
 const personSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     number: {
         type: String,

@@ -8,7 +8,13 @@ const getAll = () => {
 }
 
 const create = (newPerson) => {
-    return axios.post(baseUrl, newPerson).then(response => response.data);
+    return axios
+        .post(baseUrl, newPerson)
+        .then(response => response.data)
+        .catch(error => {
+            console.error('Error adding person:', error);
+            throw error;
+        });
 }
 
 const remove = (id) => {
