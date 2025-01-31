@@ -20,4 +20,4 @@ COPY server /app/server
 
 # Expose necessary port and set the command to start the server
 EXPOSE 3001
-CMD ["node", "server.js"]
+CMD ["node", "server/server.js"]
