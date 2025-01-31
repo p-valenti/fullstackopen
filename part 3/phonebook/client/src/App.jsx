@@ -44,30 +44,59 @@ const App = () => {
     const addPerson = (event) => {
         event.preventDefault();
 
-        const personObject = {
-            name: newName,
-            number: newNumber,
-        };
+        const existingPerson = persons.find(person => person.name.toLowerCase() === newName.toLowerCase());
 
-        personService
-            .create(personObject)
-            .then(newPerson => {
-                setPersons(persons.concat(newPerson));
-                setNewName('');
-                setNewNumber('');
-                setErrorMessage({ message: `Added '${newPerson.name}'`, type: 'success' });
-                setTimeout(() => {
-                    setErrorMessage(null);
-                }, 3000);
-            })
-            .catch(error => {
-                console.error('Error creating person:', error);
-                setErrorMessage({ message: `Failed to add '${newName}'`, type: 'error' });
-                setTimeout(() => {
-                    setErrorMessage(null);
-                }, 5000);
-            });
+        if (existingPerson) {
+            if (window.confirm(`${newName} is already in the phonebook. Replace the old number with the new one?`)) {
+                const updatedPerson = { ...existingPerson, number: newNumber };
+
+                personService
+                    .update(existingPerson.id, updatedPerson)
+                    .then(returnedPerson => {
+                        setPersons(persons.map(person => person.id !== existingPerson.id ? person : returnedPerson));
+                        setNewName('');
+                        setNewNumber('');
+                        setErrorMessage(`Updated '${returnedPerson.name}'`);
+                        setTimeout(() => {
+                            setErrorMessage(null);
+                        }, 3000);
+                    })
+                    .catch(error => {
+                        console.error('Error updating person:', error);
+                        setErrorMessage({ message: `Information of '${newName}' has already been removed from the server`, type: 'error' });
+                        setPersons(persons.filter(p => p.id !== existingPerson.id));
+                        setTimeout(() => {
+                            setErrorMessage(null);
+                        }, 5000);
+                    });
+            }
+        } else {
+            const personObject = {
+                name: newName,
+                number: newNumber,
+            };
+
+            personService
+                .create(personObject)
+                .then(newPerson => {
+                    setPersons(persons.concat(newPerson));
+                    setNewName('');
+                    setNewNumber('');
+                    setErrorMessage(`Added '${newPerson.name}'`);
+                    setTimeout(() => {
+                        setErrorMessage(null);
+                    }, 3000);
+                })
+                .catch(error => {
+                    console.error('Error creating person:', error);
+                    setErrorMessage({ message: `Failed to add '${newName}'`, type: 'error' });
+                    setTimeout(() => {
+                        setErrorMessage(null);
+                    }, 5000);
+                });
+        }
     };
+
 
     const deletePerson = (id, name) => {
         if (window.confirm(`Delete ${name}?`)) {
