@@ -121,7 +121,7 @@ app.use((error, request, response, next) => {
     console.error(error.message);
 
     if (error.name === 'ValidationError') {
-        return response.status(400).json({ error: error.message }); // ✅ Send validation errors to frontend
+        return response.status(400).json({ error: error.message });
     }
 
     next(error);

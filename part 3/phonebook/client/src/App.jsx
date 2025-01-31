@@ -62,15 +62,22 @@ const App = () => {
                         }, 3000);
                     })
                     .catch(error => {
-                        console.error('Error updating person:', error);
-                        setErrorMessage({
-                            message: error.response?.data?.error || `Failed to update '${newName}'`,
-                            type: 'error'
-                        });
+                        console.error('Error creating person:', error);
+
+                        if (error.response && error.response.data) {
+                            setErrorMessage({
+                                message: error.response.data.error || 'An unknown error occurred',
+                                type: 'error'
+                            });
+                        } else {
+                            setErrorMessage({ message: 'Failed to connect to server', type: 'error' });
+                        }
+
                         setTimeout(() => {
                             setErrorMessage(null);
                         }, 5000);
                     });
+
             }
         } else {
             const personObject = {
@@ -84,21 +91,28 @@ const App = () => {
                     setPersons(persons.concat(newPerson));
                     setNewName('');
                     setNewNumber('');
-                    setErrorMessage(`Added '${newPerson.name}'`);
+                    setErrorMessage({ message: `Added '${newPerson.name}'`, type: 'success' });
                     setTimeout(() => {
                         setErrorMessage(null);
                     }, 3000);
                 })
                 .catch(error => {
                     console.error('Error creating person:', error);
-                    setErrorMessage({
-                        message: error.response?.data?.error || `Failed to add '${newName}'`,
-                        type: 'error'
-                    });
+
+                    if (error.response && error.response.data) {
+                        setErrorMessage({
+                            message: error.response.data.error || 'An unknown error occurred',
+                            type: 'error'
+                        });
+                    } else {
+                        setErrorMessage({ message: 'Failed to connect to server', type: 'error' });
+                    }
+
                     setTimeout(() => {
                         setErrorMessage(null);
                     }, 5000);
                 });
+
         }
     };
 
