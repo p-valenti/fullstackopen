@@ -117,6 +117,10 @@ app.get('/', (request, response) => {
     response.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
+app.get('*', (request, response) => {
+    response.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
+
 app.use((error, request, response, next) => {
     console.error(error.message);
 
