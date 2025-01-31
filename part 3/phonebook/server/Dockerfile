@@ -1,38 +1,23 @@
-# Stage 1: Build the client (Vite)
-FROM node:20.12.0-slim AS build-client
-
-# Set working directory to client
+# Step 1: Build the client
+FROM node:20 AS build-client
 WORKDIR /app/client
-
-# Copy client package files and install dependencies
-COPY client/package.json client/package-lock.json ./
+COPY ../client/package.json ../client/package-lock.json ./   # Adjust paths for package.json
 RUN npm ci
+COPY ../client ./  # Adjust paths to copy the entire client folder
+RUN npm run build  # Build the client
 
-# Build the client
-COPY client /app/client
-RUN npm run build
+# Step 2: Build the server
+FROM node:20 AS build-server
+WORKDIR /app/server
+COPY package.json package-lock.json ./  # Copy server package files
+RUN npm ci  # Install server dependencies
 
-# Stage 2: Build the server
-FROM node:20.12.0-slim AS build-server
+# Copy the built client files to the server
+COPY --from=build-client /app/client/dist /app/client/dist  # Adjust for build output
 
-# Set working directory to server
-WORKDIR /app
+# Copy the server code
+COPY . /app/server
 
-# Copy server package files and install dependencies
-COPY server/package.json server/package-lock.json ./server/
-RUN npm ci --prefix ./server
-
-# Copy the built client files from the build-client stage
-COPY --from=build-client /app/client/dist /app/client/dist
-
-# Copy the server code to the final server image
-COPY server /app/server
-
-# Set environment to production
-ENV NODE_ENV=production
-
-# Expose the necessary port
-EXPOSE 3000
-
-# Set the correct entry point to start the server (index.js)
-CMD ["node", "server/index.js"]
+# Expose necessary port and set the command to start the server
+EXPOSE 5000
+CMD ["node", "server.js"]  # Assuming your entry point is server.js
