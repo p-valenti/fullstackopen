@@ -117,8 +117,14 @@ app.get('/', (request, response) => {
     response.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
-app.use((request, response) => {
-    response.status(404).send({ error: 'unknown endpoint' });
+app.use((error, request, response, next) => {
+    console.error(error.message);
+
+    if (error.name === 'ValidationError') {
+        return response.status(400).json({ error: error.message }); // ✅ Send validation errors to frontend
+    }
+
+    next(error);
 });
 
 const errorHandler = (error, request, response, next) => {

@@ -56,15 +56,17 @@ const App = () => {
                         setPersons(persons.map(person => person.id !== existingPerson.id ? person : returnedPerson));
                         setNewName('');
                         setNewNumber('');
-                        setErrorMessage(`Updated '${returnedPerson.name}'`);
+                        setErrorMessage({ message: `Updated '${returnedPerson.name}'`, type: 'success' });
                         setTimeout(() => {
                             setErrorMessage(null);
                         }, 3000);
                     })
                     .catch(error => {
                         console.error('Error updating person:', error);
-                        setErrorMessage({ message: `Information of '${newName}' has already been removed from the server`, type: 'error' });
-                        setPersons(persons.filter(p => p.id !== existingPerson.id));
+                        setErrorMessage({
+                            message: error.response?.data?.error || `Failed to update '${newName}'`,
+                            type: 'error'
+                        });
                         setTimeout(() => {
                             setErrorMessage(null);
                         }, 5000);
@@ -89,7 +91,10 @@ const App = () => {
                 })
                 .catch(error => {
                     console.error('Error creating person:', error);
-                    setErrorMessage({ message: `Failed to add '${newName}'`, type: 'error' });
+                    setErrorMessage({
+                        message: error.response?.data?.error || `Failed to add '${newName}'`,
+                        type: 'error'
+                    });
                     setTimeout(() => {
                         setErrorMessage(null);
                     }, 5000);
@@ -128,6 +133,7 @@ const App = () => {
             <h2>Phonebook</h2>
             <Notification message={errorMessage?.message} type={errorMessage?.type} />
             <Filter searchName={searchName} handleSearchNameChange={handleSearchNameChange}/>
+            <h2>Add a new person</h2>
             <Form
                 addPerson={addPerson}
                 newName={newName}
