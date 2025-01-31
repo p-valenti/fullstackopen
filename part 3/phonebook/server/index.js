@@ -10,7 +10,6 @@ app.use(cors());
 app.use(express.json());
 
 const Person = require('./models/person')
-const {models} = require("mongoose");
 
 app.use(express.static(path.join(__dirname, 'dist')));
 
@@ -20,13 +19,7 @@ morgan.token('body', (req) => {
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
 
-let persons = [];
-
 const requestLogger = (request, response, next) => {
-    console.log('Method:', request.method)
-    console.log('Path:  ', request.path)
-    console.log('Body:  ', request.body)
-    console.log('---')
     next()
 }
 
@@ -145,10 +138,5 @@ const errorHandler = (error, request, response, next) => {
 
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
 app.listen(process.env.PORT || 3001, '0.0.0.0', () => {
-    console.log(`Server running on port ${process.env.PORT || 3001}`);
 });
-
-console.log('MONGODB_URI:', process.env.MONGODB_URI);
-console.log('PORT:', process.env.PORT);

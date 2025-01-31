@@ -21,7 +21,6 @@ const personSchema = new mongoose.Schema({
 const Person = mongoose.model('Person', personSchema);
 
 if (process.argv.length === 3) {
-    console.log('phonebook:');
     Person.find({})
         .then((result) => {
         result.forEach((person) => {
@@ -31,7 +30,6 @@ if (process.argv.length === 3) {
     })
         .catch(err => console.error(err));
 } else if (process.argv.length === 5) {
-    // Add a new entry
     const name = process.argv[3];
     const number = process.argv[4];
 

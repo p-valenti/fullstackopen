@@ -4,11 +4,8 @@ mongoose.set('strictQuery', false);
 
 const url = process.env.MONGODB_URI;
 
-console.log('connecting to', url)
-
 mongoose.connect(url)
-    .then(result => {
-        console.log('connected to MongoDB')
+    .then(() => {
     })
     .catch(error => {
         console.log('error connecting to MongoDB:', error.message)
@@ -41,6 +38,5 @@ personSchema.set('toJSON', {
         delete returnedObject.__v
     }
 })
-
 
 module.exports = mongoose.model('Person', personSchema)
