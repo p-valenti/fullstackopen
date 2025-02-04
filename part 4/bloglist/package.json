@@ -2,7 +2,7 @@
   "name": "backend",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "index1.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
@@ -24,6 +24,6 @@
     "@stylistic/eslint-plugin-js": "^3.0.1",
     "eslint": "^9.19.0",
     "globals": "^15.14.0",
-    "nodemon": "^3.1.7"
+    "nodemon": "^3.1.9"
   }
 }
